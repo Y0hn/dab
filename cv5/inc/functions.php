@@ -59,10 +59,12 @@ function usernameAvailable($username)
         $stmt = $conn->prepare($sql);
         $stmt->execute([$username]);
         $data = $stmt->fetch(PDO::FETch_ASSOC);
-        dd($data);
+        //dd($data);
+        if ($data['count'] === 0) return true;
     } catch (Exeption ex) {
         echo "<p>Chyba {e->getMessage()}</p>";        
     }
+    return false;
 }
 
 function dd($var)
