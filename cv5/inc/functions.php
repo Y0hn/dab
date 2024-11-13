@@ -1,13 +1,16 @@
+<?php
 $dbHost = 'localhost';
-$dbName = 'DAB';
-$dbUser = 'data';
-$dbPass = 'databazoveaplikacie';
+$dbName = 'hronec';
+$dbUser = 'denis';
+$dbPass = 'denis';
 
-try {
+try
+{   
     $conn = new PDO("mysql:host={$dbHost};dbname={$dbName};charset=utf8mb4", $dbUser, $dbPass);
-} catch (Exeption $e) {
-    echo "<p>Chyba {e->getMessage()}</p>"
+} catch (Exception $e) {
+    echo "<p>Chyba {$e->getMessage()}</p>";
 }
+
 function createHeader()
 {
     require_once 'inc/header.php';
@@ -48,12 +51,14 @@ function addUser($nick, $pass)
     // sem sa dostane ak je vsetko ok
 
     try {
+        global $conn;
         $passHash = password_hash($pass, PASSWORD_BCRYPT);
         $sql = 'INSERT INTO user VALUES (null, ?, ?, null, null, null);';
         $conn->prepare($sql);
-        $stmt->execute([$name,$pass]);
-    } catch (Exeption $e) {
-        echo "<p>Chyba {e->getMessage()}</p>";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$nick,$pass]);
+    } catch (Exception $e) {
+        echo "<p>Chyba {$e->getMessage()}</p>";
     }
 
     echo $nick . " / " . $pass;
@@ -61,14 +66,16 @@ function addUser($nick, $pass)
 function usernameAvailable($username)
 {
     try {
-        $sql = 'SELECT COUNT(nick) FROM user WHERE nick = ?;';
+        global $conn;
+        $sql = 'SELECT COUNT(nick) as count FROM user WHERE nick = ?;';
         $stmt = $conn->prepare($sql);
         $stmt->execute([$username]);
-        $data = $stmt->fetch(PDO::FETch_ASSOC);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
         //dd($data);
-        if ($data['count'] === 0) return true;
-    } catch (Exeption ex) {
-        echo "<p>Chyba {e->getMessage()}</p>";        
+        if ($data['count'] === 0) 
+            return true;
+    } catch (Exception $e) {
+        echo "<p>Chyba {$e->getMessage()}</p>";        
     }
     return false;
 }
@@ -77,4 +84,10 @@ function dd($var)
 {
     var_dump($var);
     die();
+}
+function getRandomText($lengh)
+{
+    $chars = '';
+    $stmt = "";
+
 }
