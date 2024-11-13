@@ -28,9 +28,14 @@ function addUser($nick, $pass)
 
     $nickLen = mb_strlen($nick);
     $passLen = mb_strlen($pass);
-    if ($nickLen < 3 || 15 < $nickLen || !usernameAvailable($nick))
+    if ($nickLen < 3 || 15 < $nickLen)
     {
         echo '<p>Nevhodne a dlzka mena (3-15 znakov).</p>';
+        $error = true;
+    }
+    else if (!usernameAvailable($nick))
+    {
+        echo '<p>Meno sa uz pouziva</p>';
         $error = true;
     }
     if ($passLen < 5 || 20 < $passLen)
@@ -40,6 +45,7 @@ function addUser($nick, $pass)
     }
 
     if ($error) return false;
+    // sem sa dostane ak je vsetko ok
 
     try {
         $passHash = password_hash($pass, PASSWORD_BCRYPT);
