@@ -110,7 +110,24 @@ function tryLoginUser($nick, $pass)
     else 
         echo $error;
 }
+function authorize()
+{
+    global $conn;
 
+    if (isset($_SESSION['secret']) && !empty($_SESSION['secret']))
+    {
+        try {
+            $sql = 'SELECT count(secret) as count FROM user WHERE secret = ?';
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([$_SESSION['secret']]);
+            $data = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($data['count'] === 1) return true;
+        } catch (Exception $e) {
+            echo "<p>Chyba: {$e->getMessage()}</p>";
+        }
+    }
+    return false;
+}
 function dd($var){
     var_dump($var);
     die();

@@ -1,11 +1,12 @@
 <?php
 require_once 'inc/functions.php';
 
+createHeader();
+
 if (isset($_SESSION['secret']) && !empty($_SESSION['secret']))
     echo "ste prihlaseny";
 else
-    "nie ste prihlaseny";
+    echo "nie ste prihlaseny";
 
-createHeader();
 
 createFooter();
