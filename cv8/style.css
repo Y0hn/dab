@@ -30,6 +30,13 @@ p.redText {
     border: 3px solid red;
     display: none;
 }
+p.errorCode {
+    color: white;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: rgb(204, 114, 18);
+    border: 3px solid orange;
+}
 
 @media screen and (max-width: 400px) {
     section.col {

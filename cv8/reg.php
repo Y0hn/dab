@@ -1,6 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<?php
+    $error = '';
+
+function Error($e)
+{
+    global $error;
+    if (!empty($error))
+        $error .= "<br>";
+    $error .= $e;
+}
+
+if (isset($_POST['reg']))
+{
+    $usernameLenght = mb_strlen($_POST['username']);
+    $passwordLenght = mb_strlen($_POST['pass']);
+    $regularMail = "/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/";
+    $regularPass = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/";
+    $regularMobi = "/^\w{4} \w{3} \w{3}$/";
+    
+    if ($usernameLenght < 5 || 20 < $usernameLenght)
+        Error('Dlzka mena musí byt 5 až 20 znakov ' . "(odovzdana dlzka = {$usernameLenght})");
+    if ($passwordLenght < 8)
+        Error("Minimálna dĺžka hesla je 8 znakov.". "(odovzdana dlzka = {$passwordLenght})");
+    if (!preg_match($regularPass, $_POST['pass']))
+        Error("Heslo musí obsahovať aspoň jedno malé a veľké písmeno, číslo a špeciálny znak.");
+    if ($_POST['pass'] !== $_POST['pass2'])
+        Error("Heslá sa nezhodujú.");
+    if (!preg_match($regularMail, $_POST['email']))
+        Error("Zadajte platnú e-mailovú adresu!");
+    if (count(explode(' ', trim($_POST['realname']))) < 2)
+        Error("Zadajte meno aj prizvisko");
+    if (!preg_match($regularMobi, $_POST['phone']))
+        Error("Nespravny tvar telefonneho cisla");
+}
+?>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +47,8 @@
 <body>
     <form action="" method="POST">
         <H2>Registracia</H2>
-        <p class="redText">chyba</p>
+        <p class="redText"></p>
+        <p class="errorCode"><?= $error ?></p>
         <section class="col">
             <fieldset>
                 <legend>údaje používatela</legend>
@@ -45,7 +82,7 @@
 
             </fieldset>
         </section>
-        <input type="submit" value="Registruj ma!">
+        <input type="submit" name="reg" value="Registruj ma!">
     </form>
 </body>
 
@@ -54,6 +91,7 @@
 
     let inUsername = document.querySelector('input#username');
     let errors = [];
+
     inUsername.addEventListener('input', validateUsername);
 
     let inPass = document.querySelector('input#pass');
@@ -123,8 +161,7 @@
             inPass2.style.outline = '2px solid red';
 
         } else {
-            errors[1] = '';
-            inPass.style.outline = '2px solid black';
+            errors[1] = '';            inPass.style.outline = '2px solid black';
             inPass2.style.outline = '2px solid black';
         }
         updateErrorDisplay();
