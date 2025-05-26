@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skino</title>
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.5/lib/p5.min.js"></script>
+    <!--
+    <script src="p5.js"></script>
+    -->
+    <script>
+        let options = { sw: 800, sh: 600, bgc: '#323232' };
+        let bg = { x: 0, w: 520, h: 258, s: 2, path: 'img/bg.png', img: null}
+        let progress = 0;
+
+        let speed = 0.00002;
+
+        let player = { x: 50, y: 0, minY: options.sh-options.sh/4, w: 256, h: 256, s: 0.4, path: 'img/pl.png', img: null, g: 100, v: 0}
+
+        let barier = { x: 500, y: options.sh-options.sh/4, w: 212, h: 500, s: 0.4, path: 'img/cam.png', img: null}
+
+        function preload() 
+        {
+            bg.img = loadImage(bg.path);
+            player.img = loadImage(player.path);
+            barier.img = loadImage(barier.path);
+            player.y = player.minY;
+        }
+
+        function setup()
+        {
+            createCanvas(options.sw, options.sh);
+        }
+        function draw()
+        {
+            background(options.bgc);
+
+            with(bg)
+            {
+                x = (x%w);
+                image(img, x, 0, w * s, h * s);
+                image(img, x+w, 0, w * s, h * s);
+                x-=speed*deltaTime;
+            }
+            with(player)
+            {
+                image(img, x, y, w * s, h * s);
+            }
+            with(barier)
+            {
+                x = (x%bg.w)
+                image(img, x, y, w * s, h * s);
+                x-=speed*1.5*deltaTime;
+            }
+            
+            gravity();
+            move();
+        }
+        function move()
+        {
+            player.y += player.v * deltaTime/1000;
+        }
+        function gravity()
+        {
+            if      (player.y < player.minY)
+            {
+                player.v += player.g;
+            }
+            else if (player.y > player.minY)
+            {
+                player.v = 0;
+                player.y = player.minY;
+            }
+        }
+        function keyPressed() 
+        {
+            if (key === 'w' && player.v === 0) 
+            {
+                player.v -= 1500;
+            }
+        }
+    </script>
+</body>
+</html>
